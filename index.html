@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>apx_framez — Automotive Photography</title>
+<meta name="description" content="apx_framez — automotive photography. Daily, commissions, fan favorites.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAFAF8;
+    --ink:#14161A;
+    --graphite:#6B6F76;
+    --hairline:#E4E4E1;
+    --red:#C1121F;
+    --dark:#14161A;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{display:block; width:100%; height:100%; object-fit:cover;}
+
+  .mono{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:0.02em;
+  }
+  .display{
+    font-family:'Big Shoulders Display', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+  }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px clamp(20px,5vw,56px);
+    background:rgba(250,250,248,0.85);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--hairline);
+  }
+  .logo{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:800;
+    font-size:22px;
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+  }
+  .logo span{color:var(--red);}
+  nav ul{
+    list-style:none;
+    display:flex;
+    gap:clamp(16px,3vw,36px);
+  }
+  nav a{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    font-weight:500;
+    color:var(--graphite);
+    transition:color .2s ease;
+    position:relative;
+  }
+  nav a:hover, nav a:focus-visible{color:var(--ink);}
+  nav a:focus-visible{outline:2px solid var(--red); outline-offset:4px;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    position:relative;
+    padding:0 clamp(20px,5vw,56px) 48px;
+    overflow:hidden;
+  }
+  .hero-bg{
+    position:absolute; inset:0;
+    z-index:0;
+  }
+  .hero-bg img{filter:grayscale(15%) contrast(1.05);}
+  .hero-bg::after{
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(20,22,26,0.15) 0%, rgba(20,22,26,0.05) 40%, rgba(250,250,248,0.97) 92%);
+  }
+  .hero-content{
+    position:relative;
+    z-index:1;
+  }
+  .hero-eyebrow{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:12px;
+    letter-spacing:0.14em;
+    color:var(--graphite);
+    margin-bottom:18px;
+  }
+  .hero-eyebrow .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--red);
+    display:inline-block;
+  }
+  h1.wordmark{
+    font-size:clamp(52px, 12vw, 160px);
+    line-height:0.86;
+    font-weight:800;
+    color:var(--ink);
+  }
+  h1.wordmark .u{color:var(--red);}
+  .hero-tagline{
+    margin-top:22px;
+    max-width:520px;
+    font-size:clamp(16px,2vw,20px);
+    color:var(--graphite);
+    font-weight:400;
+  }
+  .hero-scroll{
+    margin-top:40px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:11px;
+    color:var(--graphite);
+  }
+  .hero-scroll .line{
+    width:40px; height:1px; background:var(--graphite);
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{
+    padding:96px clamp(20px,5vw,56px);
+    border-top:1px solid var(--hairline);
+  }
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:24px;
+    margin-bottom:48px;
+    flex-wrap:wrap;
+  }
+  .section-title{
+    font-size:clamp(34px,5vw,56px);
+    font-weight:800;
+  }
+  .section-desc{
+    max-width:460px;
+    color:var(--graphite);
+    font-size:15px;
+    line-height:1.6;
+  }
+
+  /* ---------- GALLERY GRID ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:2px;
+    background:var(--hairline);
+  }
+  .grid.wide .frame:nth-child(3n+1){grid-column:span 2; aspect-ratio:8/5;}
+  .frame{
+    position:relative;
+    background:var(--ink);
+    aspect-ratio:4/3;
+    overflow:hidden;
+  }
+  .frame img{
+    transition:transform .6s cubic-bezier(.2,.7,.2,1);
+  }
+  .frame:hover img{transform:scale(1.045);}
+  .frame-data{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    padding:14px 16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:10px;
+    background:linear-gradient(0deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 100%);
+    opacity:0;
+    transform:translateY(6px);
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .frame:hover .frame-data, .frame:focus-within .frame-data{opacity:1; transform:translateY(0);}
+  .frame-cap{
+    font-size:11px;
+    color:#F4F4F2;
+  }
+  .frame-cap .loc{font-weight:500; display:block; margin-bottom:2px;}
+  .frame-cap .exif{color:#B9BCC2; font-size:10px;}
+  .frame-tag{
+    font-size:10px;
+    color:#F4F4F2;
+    border:1px solid rgba(244,244,242,0.4);
+    padding:3px 8px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+
+  @media (max-width:820px){
+    .grid{grid-template-columns:repeat(2,1fr);}
+    .grid.wide .frame:nth-child(3n+1){grid-column:span 2; aspect-ratio:4/3;}
+  }
+  @media (max-width:560px){
+    .grid{grid-template-columns:1fr;}
+    .grid.wide .frame:nth-child(3n+1){grid-column:span 1;}
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:64px;
+    align-items:center;
+  }
+  .about-frame{
+    aspect-ratio:4/5;
+    background:var(--ink);
+    overflow:hidden;
+  }
+  .about-copy p{
+    font-size:clamp(20px,2.6vw,28px);
+    line-height:1.4;
+    font-weight:500;
+    color:var(--ink);
+    margin-bottom:24px;
+  }
+  .about-meta{
+    display:flex;
+    gap:32px;
+    margin-top:32px;
+    padding-top:24px;
+    border-top:1px solid var(--hairline);
+    flex-wrap:wrap;
+  }
+  .about-meta .k{font-size:11px; color:var(--graphite); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px; display:block;}
+  .about-meta .v{font-size:14px; font-weight:500;}
+  @media (max-width:760px){
+    .about{grid-template-columns:1fr;}
+  }
+
+  /* ---------- CONTACT / FOOTER ---------- */
+  footer{
+    background:var(--dark);
+    color:var(--paper);
+    padding:96px clamp(20px,5vw,56px) 32px;
+  }
+  .contact-title{
+    font-size:clamp(38px,7vw,84px);
+    font-weight:800;
+    max-width:820px;
+    line-height:0.98;
+  }
+  .contact-title .u{color:var(--red);}
+  .contact-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:16px 48px;
+    margin-top:48px;
+    padding-top:32px;
+    border-top:1px solid rgba(244,244,242,0.15);
+  }
+  .contact-item .k{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    color:#8B8E94;
+    margin-bottom:8px;
+  }
+  .contact-item a{
+    font-size:18px;
+    font-weight:500;
+    border-bottom:1px solid transparent;
+    transition:border-color .2s ease, color .2s ease;
+  }
+  .contact-item a:hover{border-color:var(--red); color:var(--red);}
+  .foot-bottom{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:80px;
+    font-size:11px;
+    color:#6B6F76;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important; scroll-behavior:auto !important;}
+  }
+
+  @media (max-width:640px){
+    nav ul{gap:14px;}
+    nav a{font-size:10px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">apx<span>_</span>framez</div>
+  <nav>
+    <ul>
+      <li><a href="#daily">Daily</a></li>
+      <li><a href="#commissions">Commissions</a></li>
+      <li><a href="#favorites">Fan Favorites</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="hero" style="padding-top:0; border-top:none;">
+  <div class="hero-bg">
+    <img src="images/comm-lambo-01.jpg" alt="Lamborghini Aventador SVJ, front view">
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow mono"><span class="dot"></span>AUTOMOTIVE PHOTOGRAPHY</div>
+    <h1 class="wordmark">apx<span class="u">_</span>framez</h1>
+    <p class="hero-tagline">There's no better way to show off.</p>
+    <div class="hero-scroll mono"><span class="line"></span>SCROLL TO VIEW WORK</div>
+  </div>
+</section>
+
+<section id="daily">
+  <div class="section-head">
+    <div class="section-title">Daily</div>
+    <p class="section-desc">Out on the road — the cars people actually drive, shot the way they're actually seen.</p>
+  </div>
+  <div class="grid wide">
+    <div class="frame" tabindex="0">
+      <img src="images/daily-supra-red-03.jpg" alt="Red Toyota Supra, three-quarter angle on the road">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Street Angle</span><span class="exif">f/4 · 1/1000s · 35mm</span></span>
+        <span class="frame-tag">Daily</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/daily-porsche-01.jpg" alt="Green Porsche GT3 RS, front detail">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Parking Lot Green</span><span class="exif">f/2.8 · 1/500s · 50mm</span></span>
+        <span class="frame-tag">Daily</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/daily-porsche-02.jpg" alt="Green Porsche GT3 RS in front of Rev and Reserve Autohaus">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Rev &amp; Reserve</span><span class="exif">f/5.6 · 1/640s · 24mm</span></span>
+        <span class="frame-tag">Daily</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/daily-porsche-03.jpg" alt="Green Porsche GT3 RS headlight close-up">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Headlight Detail</span><span class="exif">f/2 · 1/800s · 85mm</span></span>
+        <span class="frame-tag">Daily</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/daily-supra-red-01.jpg" alt="Red Toyota Supra front, gate in background">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Gate Check</span><span class="exif">f/3.2 · 1/750s · 40mm</span></span>
+        <span class="frame-tag">Daily</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/daily-supra-red-02.jpg" alt="Red Toyota Supra, bronze wheel close-up">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Bronze Wheel</span><span class="exif">f/1.8 · 1/640s · 100mm</span></span>
+        <span class="frame-tag">Daily</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/daily-supra-red-04.jpg" alt="Red Toyota Supra hood and badge detail">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Badge Detail</span><span class="exif">f/2.8 · 1/500s · 60mm</span></span>
+        <span class="frame-tag">Daily</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="commissions">
+  <div class="section-head">
+    <div class="section-title">Commissions</div>
+    <p class="section-desc">One-on-one shoots for owners, builders, and shops. Studio or on location.</p>
+  </div>
+  <div class="grid">
+    <div class="frame" tabindex="0">
+      <img src="images/comm-ducati-01.jpg" alt="Black Ducati Panigale motorcycle, showroom rear view">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Showroom Set</span><span class="exif">f/4 · 1/125s · 35mm</span></span>
+        <span class="frame-tag">Commission</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/comm-ducati-03.jpg" alt="Black Ducati Panigale motorcycle, front wheel and fairing detail">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Fairing Detail</span><span class="exif">f/2 · 1/320s · 85mm</span></span>
+        <span class="frame-tag">Commission</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/comm-lambo-02.jpg" alt="Lamborghini Aventador SVJ, rear three-quarter view">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Rear Stance</span><span class="exif">f/3.2 · 1/250s · 24mm</span></span>
+        <span class="frame-tag">Commission</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/comm-lineup.jpg" alt="Lineup of Lamborghini, Ducati, and sports cars in showroom">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Full Lineup</span><span class="exif">f/5.6 · 1/200s · 24mm</span></span>
+        <span class="frame-tag">Commission</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/comm-ferrari-01.jpg" alt="Black and yellow Ferrari SF90, front view">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Livery Front</span><span class="exif">f/4 · 1/320s · 35mm</span></span>
+        <span class="frame-tag">Commission</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/comm-ferrari-02.jpg" alt="Black and yellow Ferrari SF90, rear view">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Livery Rear</span><span class="exif">f/4 · 1/320s · 40mm</span></span>
+        <span class="frame-tag">Commission</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/comm-supra-black-01.jpg" alt="Black Toyota Supra, rear view in showroom">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Showroom Rear</span><span class="exif">f/2.8 · 1/250s · 28mm</span></span>
+        <span class="frame-tag">Commission</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/comm-supra-black-02.jpg" alt="Black Toyota Supra, side profile in showroom">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Side Profile</span><span class="exif">f/2.8 · 1/200s · 35mm</span></span>
+        <span class="frame-tag">Commission</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="favorites">
+  <div class="section-head">
+    <div class="section-title">Fan Favorites</div>
+    <p class="section-desc">The shots people ask about most.</p>
+  </div>
+  <div class="grid wide">
+    <div class="frame" tabindex="0">
+      <img src="images/fav-lambo-front.jpg" alt="Lamborghini Aventador SVJ, front view, most requested shot">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Most Requested</span><span class="exif">f/2.8 · 1/800s · 70mm</span></span>
+        <span class="frame-tag">Favorite</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/fav-ferrari-front.jpg" alt="Black and yellow Ferrari SF90, most shared shot">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Most Shared</span><span class="exif">f/4 · 1/1000s · 50mm</span></span>
+        <span class="frame-tag">Favorite</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/fav-porsche-building.jpg" alt="Green Porsche GT3 RS in front of Rev and Reserve Autohaus sign, top print">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Top Print</span><span class="exif">f/5.6 · 1/1250s · 200mm</span></span>
+        <span class="frame-tag">Favorite</span>
+      </div>
+    </div>
+    <div class="frame" tabindex="0">
+      <img src="images/fav-supra-red-angle.jpg" alt="Red Toyota Supra, angled street shot, fan pick">
+      <div class="frame-data">
+        <span class="frame-cap mono"><span class="loc">Fan Pick</span><span class="exif">f/2 · 1/2000s · 85mm</span></span>
+        <span class="frame-tag">Favorite</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="about">
+    <div class="about-frame">
+      <img src="images/comm-ducati-02.jpg" alt="Black Ducati Panigale motorcycle in showroom, blurred foreground">
+    </div>
+    <div class="about-copy">
+      <p>There's no better way to show off.</p>
+      <p style="font-size:16px; font-weight:400; color:var(--graphite);">apx_framez shoots daily drivers, commission work, and the shots that end up on everyone's feed. Every frame is built to make the car — and the moment — look the way it felt.</p>
+      <div class="about-meta">
+        <div>
+          <span class="k">Available for</span>
+          <span class="v">Commissions &amp; events</span>
+        </div>
+        <div>
+          <span class="k">Instagram</span>
+          <span class="v">@apx_framez</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="contact-title">Let's shoot <span class="u">your</span> car.</div>
+  <div class="contact-row">
+    <div class="contact-item">
+      <div class="k mono">Email</div>
+      <a href="mailto:GabELD424@gmail.com">GabELD424@gmail.com</a>
+    </div>
+    <div class="contact-item">
+      <div class="k mono">Instagram</div>
+      <a href="https://instagram.com/apx_framez" target="_blank" rel="noopener">@apx_framez</a>
+    </div>
+  </div>
+  <div class="foot-bottom mono">
+    <span>© 2026 APX_FRAMEZ</span>
+    <span>MOTORSPORT — COMMISSIONS — FAN FAVORITES</span>
+  </div>
+</footer>
+
+</body>
+</html>
